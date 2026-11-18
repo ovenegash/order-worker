@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: catalogapi
+server:
+  port: 8081
+
+chaos:
+  failure-rate: 0.0
+  delay-ms: 0

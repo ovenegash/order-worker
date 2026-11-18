@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: orderworker
+  main:
+    web-application-type: none
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: order-worker
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        max.poll.records: 100
+    listener:
+      concurrency: 3
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/orders_db}
+  data:
+    mongodb:
+      auto-index-creation: true
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+worker:
+  kafka:
+    topic: orders
+    partitions: 3
+  catalog:
+    base-url: ${CATALOG_API_URL:http://localhost:8081}
+    timeout: 2s
+    cache-ttl: 60s
+  http-retry:
+    max-attempts: 3
+    min-backoff: 200ms
+    max-backoff: 2s
+  failed-orders:
+    max-attempts: 5
+    base-delay: 10s
+    max-delay: 5m
+    batch-size: 50
+    poll-interval-ms: 5000
+  lock:
+    ttl: 30s
